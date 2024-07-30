@@ -1,26 +1,18 @@
 const hre = require("hardhat");
 
 async function main() {
-  // Deploy REC Contract
-  const REC = await hre.ethers.getContractFactory("REC");
-  const initialSupply = hre.ethers.utils.parseUnits("1000000", 18); // Adjust the initial supply if needed
-  const rec = await REC.deploy(initialSupply);
-  await rec.deployed();
+    const [deployer] = await hre.ethers.getSigners();
+    console.log("Deploying contracts with the account:", deployer.address);
 
-  console.log("REC deployed to:", rec.address);
+    const Agung = await hre.ethers.getContractFactory("Agung"); // Update to Agung
+    const agung = await Agung.deploy(ethers.utils.parseUnits("1000", 18)); // Example initial supply
 
-  // Deploy Migrations Contract
-  const Migrations = await hre.ethers.getContractFactory("Migrations");
-  const migrations = await Migrations.deploy();
-  await migrations.deployed();
-
-  console.log("Migrations deployed to:", migrations.address);
+    console.log("Agung contract deployed to:", agung.address);
 }
 
-// Execute the deployment script
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
