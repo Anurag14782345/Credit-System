@@ -16,8 +16,10 @@ export const Web3Provider = ({ children }) => {
           await window.ethereum.request({ method: "eth_requestAccounts" });
           const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
           const web3Signer = web3Provider.getSigner();
+          
           const recContractAddress = process.env.REACT_APP_REC_CONTRACT_ADDRESS;
           const migrationsContractAddress = process.env.REACT_APP_MIGRATIONS_CONTRACT_ADDRESS;
+
           const recAbi =  [
             {
               "inputs": [
@@ -53,6 +55,93 @@ export const Web3Provider = ({ children }) => {
                 }
               ],
               "name": "Approval",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "offerId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "buyer",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "pricePerUnit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "OfferAccepted",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "offerId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                }
+              ],
+              "name": "OfferCancelled",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "offerId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "pricePerUnit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "OfferCreated",
               "type": "event"
             },
             {
@@ -148,6 +237,37 @@ export const Web3Provider = ({ children }) => {
               "type": "function"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_offerId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "buyREC",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_offerId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "cancelOffer",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
               "inputs": [],
               "name": "decimals",
               "outputs": [
@@ -162,6 +282,11 @@ export const Web3Provider = ({ children }) => {
             },
             {
               "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_from",
+                  "type": "address"
+                },
                 {
                   "internalType": "address",
                   "name": "_to",
@@ -187,12 +312,40 @@ export const Web3Provider = ({ children }) => {
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_account",
-                  "type": "address"
+                  "internalType": "uint256",
+                  "name": "_offerId",
+                  "type": "uint256"
                 }
               ],
-              "name": "getBalance",
+              "name": "getOffer",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerUnit",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isAvailable",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "getOffersCount",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -204,6 +357,30 @@ export const Web3Provider = ({ children }) => {
               "type": "function"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_pricePerUnit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "listForSale",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "offerId",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
               "inputs": [],
               "name": "name",
               "outputs": [
@@ -211,6 +388,40 @@ export const Web3Provider = ({ children }) => {
                   "internalType": "string",
                   "name": "",
                   "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "offers",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerUnit",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isAvailable",
+                  "type": "bool"
                 }
               ],
               "stateMutability": "view",

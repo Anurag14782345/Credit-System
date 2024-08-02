@@ -1,18 +1,24 @@
 import React from "react";
-import { Web3Provider } from "./context/Web3Context";
-import RECInteraction from "./components/RECInteraction";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import Buy from "./components/Buy";
+import Sell from "./components/Sell";
+import "./App.css";
 
-function App() {
+const App = () => {
   return (
-    <Web3Provider>
+    <Router>
       <div className="App">
-        <header className="App-header">
-          <h1>GreenTrade Platform</h1>
-          <RECInteraction />
-        </header>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" component={Home} />
+          <Route path="/buy" component={Buy} />
+          <Route path="/sell" component={Sell} />
+        </Routes>
       </div>
-    </Web3Provider>
+    </Router>
   );
-}
+};
 
 export default App;
